@@ -13,9 +13,6 @@ public class DoorController : MonoBehaviour
     [SerializeField]
     Sprite UnlockedSprite;
 
-    [SerializeField]
-    bool ShowDebugUI;
-
     BoxCollider2D colliderComp;
 
     // Näitä värejä käytetään lukkosymbolin piirtämiseen.
@@ -24,6 +21,13 @@ public class DoorController : MonoBehaviour
 
     SpriteRenderer doorSprite; // Oven kuva
     SpriteRenderer lockSprite; // Lapsi gameobjectissa oleva lukon kuva
+
+    // Debug ui
+    [SerializeField]
+    bool ShowDebugUI;
+    [SerializeField]
+    int DebugFontSize = 32;
+
 
     void Start()
     {
@@ -106,7 +110,7 @@ public class DoorController : MonoBehaviour
     // toimivat oikein.
 
 
-    Rect guiRect; //< Seuraavan napin alue
+  
 
     // Unity kutsuu tätä funktiota kaiken muun piirtämisen jälkeen
     // Sen sisällä voi piirtää käyttöliittymää
@@ -116,36 +120,40 @@ public class DoorController : MonoBehaviour
         {
             return;
         }
-        ResetGuiRect();
-        if (GUI.Button(NextGuiRect(), "Open"))
+        GUIStyle buttonStyle = GUI.skin.GetStyle("button");
+        GUIStyle labelStyle = GUI.skin.GetStyle("label");
+        buttonStyle.fontSize = DebugFontSize;
+        labelStyle.fontSize = DebugFontSize;
+        Rect guiRect = GetGuiRect();
+        GUILayout.BeginArea(guiRect);
+        
+        GUILayout.Label("Door");
+        if (GUILayout.Button("Open"))
         {
             OpenDoor();
         }
-        if (GUI.Button(NextGuiRect(), "Close"))
+        if (GUILayout.Button("Close"))
         {
             CloseDoor();
         }
-        if (GUI.Button(NextGuiRect(), "Lock"))
+        if (GUILayout.Button("Lock"))
         {
             LockDoor();
         }
-        if (GUI.Button(NextGuiRect(), "Unlock"))
+        if (GUILayout.Button( "Unlock"))
         {
             UnlockDoor();
         }
+        
+        GUILayout.EndArea();
     }
 
     // Näiden kahden funktion avulla ei tarvitse itse
     // määrittää jokaisen napin paikkaa, vaan ne
     // ladotaan automaattisesti allekkain.
-    private Rect NextGuiRect()
-    {
-        Rect next = guiRect;
-        guiRect.y += 32;
-        return next;
-    }
+   
 
-    private void ResetGuiRect()
+    private Rect GetGuiRect()
     {
         Vector3 buttonPos = transform.position;
         buttonPos.x += 1;
@@ -157,6 +165,8 @@ public class DoorController : MonoBehaviour
         // ja siksi se pitä vähentää ruudun korkeudesta.
         Vector3 screenPoint = Camera.main.WorldToScreenPoint(buttonPos);
         float screenHeight = Screen.height;
-        guiRect = new Rect(screenPoint.x, screenHeight - screenPoint.y, 100, 32);
+        return new Rect(screenPoint.x, screenHeight - screenPoint.y, 
+            DebugFontSize * 8,  // Leveys ja korkeus niin että varmasti mahtuu
+            DebugFontSize * 100);
     }    
 }
