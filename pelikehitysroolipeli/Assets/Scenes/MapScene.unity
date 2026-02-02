@@ -4424,7 +4424,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1812754623
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4445,8 +4445,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1.5999756, y: 12.399994}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 404.23, y: -33.649}
+  m_SizeDelta: {x: -808.47, y: -67.298}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1812754624
 MonoBehaviour:
@@ -4498,7 +4498,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e359dc12caea06499eafb03dbae1d5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doorState: 1
+  ClosedDoorSprite: {fileID: 0}
+  OpenDoorSprite: {fileID: 0}
+  LockedSprite: {fileID: 0}
+  UnlockedSprite: {fileID: 0}
+  ShowDebugUI: 0
+  DebugFontSize: 32
+  currentState: 1
 --- !u!1 &1928549710
 GameObject:
   m_ObjectHideFlags: 0
