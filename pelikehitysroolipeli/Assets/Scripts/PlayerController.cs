@@ -1,47 +1,69 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    Vector2 lastMovement;
-    Rigidbody2D rb;
-    [SerializeField]
-    float moveSpeed;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("Liikkuminen")]
+    [SerializeField] private float speed = 5f;
+
+    [Header("Oven UI")]
+    [SerializeField] private GameObject doorPanel;
+
+    private DoorController nearbyDoor;
+    private Rigidbody2D rb;
+    private Vector2 moveInput;
+
+    private void Awake()
     {
-        lastMovement = Vector2.zero;
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        if (doorPanel != null)
+            doorPanel.SetActive(false);
+    }
+
+    private void Update()
+    {
+        // Lue pelaajan input
+        float moveX = Input.GetAxis("Horizontal");
+        float moveY = Input.GetAxis("Vertical"); // 2D: Y-akseli
+        moveInput = new Vector2(moveX, moveY).normalized * speed;
     }
 
     private void FixedUpdate()
     {
-
-        rb.MovePosition(rb.position + lastMovement * moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + moveInput * Time.fixedDeltaTime);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        // Huomaa mitä pelaaja löytää
-        if (collision.CompareTag("Door"))
+        if (other.CompareTag("Door"))
         {
-            Debug.Log("Found Door");
-        }
-        else if (collision.CompareTag("Merchant"))
-        {
-            Debug.Log("Found Merchant");
+            nearbyDoor = other.GetComponent<DoorController>();
+            ShowDoorUI(true);
         }
     }
 
-    void OnMoveAction(InputValue value)
+    private void OnTriggerExit2D(Collider2D other)
     {
-        Vector2 v = value.Get<Vector2>();
-        lastMovement = v;
-    }    
+        if (other.CompareTag("Door"))
+        {
+            nearbyDoor = null;
+            ShowDoorUI(false);
+        }
+    }
+
+    private void ShowDoorUI(bool show)
+    {
+        if (doorPanel != null)
+            doorPanel.SetActive(show);
+    }
+
+    // UI-napit
+    public void AvaaOvi() => nearbyDoor?.ReceiveAction(DoorController.DoorAction.Avaa);
+    public void SuljeOvi() => nearbyDoor?.ReceiveAction(DoorController.DoorAction.Sulje);
+    public void LukitseOvi() => nearbyDoor?.ReceiveAction(DoorController.DoorAction.Lukitse);
+    public void AvaaLukko() => nearbyDoor?.ReceiveAction(DoorController.DoorAction.AvaaLukko);
 }
