@@ -6,14 +6,17 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        // Jos instanssi on jo olemassa ja se ei ole tämä
         if (Instance != null && Instance != this)
         {
+            Debug.LogWarning("Duplicate GameManager destroyed: " + gameObject.name);
             Destroy(gameObject);
+            return;
         }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        Debug.Log("GameManager initialized: " + gameObject.name);
     }
 }
